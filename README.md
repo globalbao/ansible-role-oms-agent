@@ -3,6 +3,7 @@
 This Role downloads and installs the 32/64-bit OMS Agent on Windows instances. 
 
 ## Role Variables
+
 Defined in `./defaults/main.yml`
 
 * `url_omsagentx32`
@@ -13,14 +14,14 @@ Defined in `./defaults/main.yml`
 * `oms_workspace_key`
 
 ## Task Tags
---------------
+
 Defined in `./tasks/windows.yml`
 
 * `download`
 * `install`
 
 ## Usage Examples
---------------
+
 * ansible-playbook tasks/main.yml -vvv -- --tags="download,install"
 
 ## Role Development on Windows targets (Azure)
