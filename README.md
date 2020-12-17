@@ -26,4 +26,4 @@ Defined in `./tasks/windows.yml`
 
 ## Role Development on Windows targets (Azure)
 
-For instructions to develop this role on `Windows targets in Azure` using the `Molecule-Azure driver` refer to [https://jloudon.com/cloud/Ansible-on-Azure-Part-3/](hhttps://jloudon.com/cloud/Ansible-on-Azure-Part-3/)
+For instructions to develop this role on `Windows targets in Azure` using the `Molecule-Azure driver` refer to [https://jloudon.com/cloud/Ansible-on-Azure-Part-3/](https://jloudon.com/cloud/Ansible-on-Azure-Part-3/)
