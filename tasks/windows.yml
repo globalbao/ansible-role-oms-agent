@@ -1,0 +1,77 @@
+---
+- name: Verify OMS agent
+  changed_when: not initial_verification_service_status.exists
+  become_method: runas
+  win_service:
+    name: HealthService
+  register: initial_verification_service_status
+  tags: download
+
+- name: Win 32-bit binary download
+  when: ansible_architecture == "32-bit" and not initial_verification_service_status.exists
+  win_get_url:
+    url: '{{ url_omsagentx32 }}'
+    dest: '{{ binary_tmpdir_windows }}\{{ MMAInstallerName }}'
+  register: win32_binary_download
+  failed_when: win32_binary_download.failed
+  tags: download
+  
+- name: "print win32_binary_download"
+  debug:
+    var: win32_binary_download
+
+- name: Win 64-bit binary download
+  when: ansible_architecture == "64-bit" and not initial_verification_service_status.exists
+  win_get_url:
+    url: '{{ url_omsagentx64 }}'
+    dest: '{{ binary_tmpdir_windows }}\{{ MMAInstallerName }}'
+  register: win64_binary_download
+  failed_when: win64_binary_download.failed
+  tags: download
+
+- name: "print win64_binary_download"
+  debug:
+    var: win64_binary_download
+
+- name: Install OMS block
+  when: not initial_verification_service_status.exists
+  become_method: runas
+  block:
+    - name: Install OMS
+      win_command: '{{ binary_tmpdir_windows }}\{{ MMAInstallerName }} /Q:A /R:N /C:"setup.exe /qn ADD_OPINSIGHTS_WORKSPACE=1 OPINSIGHTS_WORKSPACE_ID={{ oms_workspace_id }} OPINSIGHTS_WORKSPACE_KEY={{ oms_workspace_key }} AcceptEndUserLicenseAgreement=1"'
+      register: win_binary_install
+      ignore_errors: yes
+      failed_when: win_binary_install.failed
+
+    - name: "print win_binary_install"
+      debug:
+        var: win_binary_install
+
+    - name: "Wait for OMS installation to complete"
+      win_wait_for:
+          timeout: 120
+
+    - name: Verify OMS agent is running
+      win_service:
+        name: HealthService
+        start_mode: auto
+        state: started
+      register: final_verification_service_status
+      failed_when: final_verification_service_status.failed
+
+    - name: "print final_verification_service_status"
+      debug:
+        var: final_verification_service_status
+
+    - name: OMS binary deletion
+      when: final_verification_service_status is not skipped and not final_verification_service_status.failed
+      win_file:
+        path: '{{ binary_tmpdir_windows }}\{{ MMAInstallerName }}'
+        state: absent
+      register: win_binary_deletion
+      failed_when: win_binary_deletion.failed
+
+    - name: "print win_binary_deletion"
+      debug:
+        var: win_binary_deletion
+  tags: install

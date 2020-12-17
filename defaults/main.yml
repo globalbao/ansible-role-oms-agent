@@ -1,0 +1,7 @@
+---
+url_omsagentx64: 'https://go.microsoft.com/fwlink/?LinkId=828603'
+url_omsagentx32: 'https://go.microsoft.com/fwlink/?LinkId=828604'
+MMAInstallerName: 'MMASetup.exe'
+binary_tmpdir_windows: C:\windows\temp\
+oms_workspace_id: xxxx-xxxxx-xxxx-xxxx-xxxxxxxx
+oms_workspace_key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx==
